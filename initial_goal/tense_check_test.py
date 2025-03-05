@@ -19,6 +19,9 @@ doc = nlp("歌わせられる、歌わされる、妹は母に皿を洗わせら
 
 for token in doc:
     print(token.text,token.lemma_,token.pos_,token.morph,token.is_stop,token.tag_)
+    print(type(token))
+    print(type(token.text))
+    print(token.morph.to_dict())
 
 
 
