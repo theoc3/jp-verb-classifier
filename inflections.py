@@ -76,13 +76,8 @@ def inflect(dict_form, pos):
         infl["negative"] = infl["nominal"] + "ない"
         infl["participle"] = infl["nominal"] + "て"
         infl["potential"] = infl["nominal"] + "られる" # plus "ら" (formal def of potential)
-        infl["past-potential"] = infl["nominal"] + "られた" # additional, plus "ら" (formal def of potential)
         infl["passive"] = infl["nominal"] + "られる"
-        infl["past-passive"] = infl["nominal"] + "られた" # additional
         infl["causative"] = infl["nominal"] + "させる"
-        infl["past-causative"] = infl["nominal"] + "させた" # additional
-        infl["causative-passive"] = infl["nominal"] + "させられる" # additional
-        infl["past-causative-passive"] = infl["nominal"] + "させられた" # additional
         infl["provisional-conditional"] = infl["nominal"] + "れば"
         infl["imperative"] = infl["nominal"] + "ろ"
         infl["volitional"] = infl["nominal"] + "よう"
@@ -98,7 +93,6 @@ def inflect(dict_form, pos):
             infl["negative"] = root + "たない"
             infl["participle"] = root + "って"
             infl["potential"] = root + "てる"
-            infl["past-potential"] = root + "てた" # additional
             infl["volitional"] = root + "とう"
 
         elif pos == "v5k":
@@ -109,7 +103,6 @@ def inflect(dict_form, pos):
             infl["negative"] = root + "かない"
             infl["participle"] = root + "いて"
             infl["potential"] = root + "ける"
-            infl["past-potential"] = root + "けた" # additional
             infl["volitional"] = root + "こう"
 
         elif pos == "v5g":
@@ -120,7 +113,6 @@ def inflect(dict_form, pos):
             infl["negative"] = root + "がない"
             infl["participle"] = root + "いで"
             infl["potential"] = root + "げる"
-            infl["past-potential"] = root + "げた" # additional
             infl["volitional"] = root + "ごう"
 
         elif pos == "v5s":
@@ -131,7 +123,6 @@ def inflect(dict_form, pos):
             infl["negative"] = root + "さない"
             infl["participle"] = infl["nominal"] + "て"
             infl["potential"] = root + "せる"
-            infl["past-potential"] = root + "せた" # additional
             infl["volitional"] = root + "ぞう"
 
         elif pos == "v5n":
@@ -142,7 +133,6 @@ def inflect(dict_form, pos):
             infl["negative"] = root + "なない"
             infl["participle"] = root + "んで"
             infl["potential"] = root + "ねる"
-            infl["past-potential"] = root + "ねた" # additional
             infl["volitional"] = root + "のう"
 
         elif pos == "v5b":
@@ -153,7 +143,6 @@ def inflect(dict_form, pos):
             infl["negative"] = root + "ばない"
             infl["participle"] = root + "んで"
             infl["potential"] = root + "べる"
-            infl["past-potential"] = root + "べた" # additional
             infl["volitional"] = root + "ぼう"
 
         elif pos == "v5m":
@@ -164,7 +153,6 @@ def inflect(dict_form, pos):
             infl["negative"] = root + "まない"
             infl["participle"] = root + "んで"
             infl["potential"] = root + "める"
-            infl["past-potential"] = root + "めた" # additional
             infl["volitional"] = root + "もう"
 
         elif pos == "v5r":
@@ -175,7 +163,6 @@ def inflect(dict_form, pos):
             infl["negative"] = root + "らない"
             infl["participle"] = root + "って"
             infl["potential"] = root + "れる"
-            infl["past-potential"] = root + "れた" # additional
             infl["volitional"] = root + "ろう"
 
         elif pos == "v5u":
@@ -186,7 +173,6 @@ def inflect(dict_form, pos):
             infl["negative"] = root + "わない"
             infl["participle"] = root + "って"
             infl["potential"] = root + "える"
-            infl["past-polite"] = root + "えた" # additional
             infl["volitional"] = root + "おう"
 
         else:
@@ -198,11 +184,7 @@ def inflect(dict_form, pos):
 
         _check(infl["negative"], "negative", "ない")
         infl["passive"] = infl["negative"][:-2] + "れる"
-        infl["past-passive"] = infl["negative"][:-2] + "れた" # additional
         infl["causative"] = infl["negative"][:-2] + "せる"
-        infl["past-causative"] = infl["negative"][:-2] + "せた" #additional
-        infl["causative-passive"] = infl["negative"][:-2] + "せられる" # additional
-        infl["past-causative-passive"] = infl["negative"][:-2] + "せられた" # additional
 
         _check(infl["potential"], "potential", "る")
         infl["provisional-conditional"] = infl["potential"][:-1] + "ば"
@@ -217,13 +199,8 @@ def inflect(dict_form, pos):
             root = dict_form[:-2]
             infl["nominal"] = root + "し"
             infl["potential"] = root + "できる"
-            infl["past-potential"] = root + "できた" # additional
             infl["passive"] = root + "される"
-            infl["past-passive"] = root + "された" # additional
             infl["causative"] = root + "させる"
-            infl["past-causative"] = root + "させた" # additional
-            infl["causative-passive"] = root + "させられる" # additional
-            infl["past-causative-passive"] = root + "させられた" # additional
             infl["provisional-conditional"] = root + "すれば"
             infl["imperative"] = root + "しろ"
             infl["volitional"] = root + "しよう"
@@ -252,13 +229,8 @@ def inflect(dict_form, pos):
         infl["negative"] = o_form + "ない"
         infl["participle"] = i_form + "て"
         infl["potential"] = o_form + "れる"
-        infl["past-potential"] = o_form + "れた" # additional
         infl["passive"] = o_form + "られる"
-        infl["past-passive"] = o_form + "られた" # additional
         infl["causative"] = o_form + "させる"
-        infl["past-causative"] = o_form + "させた" # additional
-        infl["causative-passive"] = o_form + "させられる" # additional
-        infl["past-causative-passive"] = o_form + "させられた" # additional
         infl["provisional-conditional"] = u_form + "れば"
         infl["imperative"] = o_form + "い"
         infl["volitional"] = o_form + "よう"

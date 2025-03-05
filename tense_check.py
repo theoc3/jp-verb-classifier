@@ -12,6 +12,10 @@ import json
 # conjugation script
 import inflections
 
+# kana kanji conversion
+import mozcpy
+converter = mozcpy.Converter()
+
 # from natto import MeCab
 # dicdir = "/opt/homebrew/lib/mecab/dic/ipadic"
 # nm = MeCab(f"-d {dicdir}")
@@ -69,8 +73,10 @@ def find_verb(sentence):
     result = []
     for verb in all_verbs:
         full_verb_form = ''.join(["する" if i.form == "為る" else i.form for i in verb])
-        if verb[0].lemma == "する" or verb[1].lemma == "為る" or verb[0].lemma == "為る":
+        if verb[0].lemma == "する" or verb[0].lemma == "為る":
             result.append(("する",full_verb_form,verb))
+        elif verb[1].lemma == "為る":
+            result.append(("する",full_verb_form[2:],verb))
         else:
             result.append((verb[0].lemma,full_verb_form,verb))
 
@@ -117,9 +123,15 @@ def get_verb_type_jisho(verb):
             return first_word
     return None
 
+def get_kana_form(verb):
+    result = jam.lookup(verb)
+    return result.entries[0].kana_forms[0]
+    
+    
 # jamdict version 
 def get_verb_type_jamdict(verb):
     result = jam.lookup(verb)
+    print(result,verb)
     verb_type_string = result.entries[0].senses[0].to_dict()['pos'][0]
     verb_type = verb_type_string.split()[0].upper()
 
@@ -140,12 +152,20 @@ def get_verb_type_jamdict(verb):
 def get_inflection(verb, verb_tense):
     return inflections.inflect(verb, get_verb_type_jamdict(verb))[verb_tense]
 
-
+def is_equal(verb1,verb2):
+    converted_verb1 = converter.convert(verb1,n_best=10)
+    converted_verb2 = converter.convert(verb2,n_best=10)
+    union_set = set(converted_verb1).union(set(converted_verb2))
+    return len(union_set) >= 1
 
 
 
 #print(find_verb("食べさせる"))
-#print(inflections.inflect(test1[0], get_verb_type(test1[0])))
+#print(inflections.inflect("食べる", get_verb_type_jamdict("食べる")))
 
-#t=s[8]
-#print(t.id,t.form,t.lemma,t.upos,t.xpos,t.feats,t.head.id,t.deprel,t.deps,t.misc)
+s=nlp("其國を治めんと欲する者は先づ其家を齊ふ")
+print(s)
+t=s[4]
+print(t.id,t.form,t.lemma,t.upos,t.xpos,t.feats,t.head.id,t.deprel,t.deps,t.misc)
+
+print(inflections.inflect("洗わせられる", "v1")["past"])
