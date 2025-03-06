@@ -14,6 +14,8 @@
 
 ## Usage
 ### Command/Result
+To install libraries, follow instructions for [spaCy](https://spacy.io/models/ja) and [MeCab](https://github.com/buruzaemon/natto-py?tab=readme-ov-file) (Link leads to a repo for a library that also uses MeCab w/ installation instructions)
+
 ```
  python3 classify.py
 ```
