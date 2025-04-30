@@ -49,7 +49,7 @@ def inflect(dict_form, pos):
     its dictionary form."""
 
     infl = {}
-
+    infl["dict"] = dict_form
     if pos == "adj-i":
         _check(dict_form, pos, "い")
 
@@ -84,7 +84,7 @@ def inflect(dict_form, pos):
         infl["imperative"] = infl["nominal"] + "ろ"
         infl["volitional"] = infl["nominal"] + "よう"
 
-    elif pos in ("v5b", "v5g", "v5k", "v5m", "v5n", "v5r", "v5s", "v5t", "v5u"):
+    elif pos in ("v5b", "v5g", "v5k", "v5m", "v5n", "v5r", "v5s", "v5t", "v5u","v5k-s","v5r-i"):
         root = ""
 
         if pos == "v5t":
@@ -177,12 +177,28 @@ def inflect(dict_form, pos):
             infl["potential"] = root + "える"
             infl["volitional"] = root + "おう"
 
+        elif pos == "v5k-s":
+            _check(dict_form, pos, "く")
+            root = dict_form[:-1]
+            infl["nominal"] = root + "き"
+            infl["past"] = root + "った"
+            infl["negative"] = root + "かない"
+            infl["participle"] = root + "って"
+            infl["potential"] = root + "ける"
+            infl["volitional"] = root + "こう"
+            
+        elif pos == "v5r-i":
+            _check(dict_form, pos, "る")
+            infl["nominal"] = root + "り"
+            infl["past"] = root + "った"
+            infl["negative"] = "ない"
+            infl["potential"] = root + "れる"
+            infl["participle"] = root + "って"
+            
         else:
             assert False
-            # TODO: v5k-s
-            # TODO: v5r-i
-            # TODO: v5u-s
-            # TODO: v5z
+            # TODO: v5u-s (colloquial conjugation in speech only i.e. 言う(ゆう) )
+            # TODO: v5z (not found in modern Japanese)
 
         _check(infl["negative"], "negative", "ない")
         infl["passive"] = infl["negative"][:-2] + "れる"
@@ -249,6 +265,7 @@ def inflect(dict_form, pos):
     assert nai_form[-2:] == "ない"
     infl["negative-nominal"] = nai_form[:-2] + "なく"
     infl["negative-past"] = nai_form[:-2] + "なかった"
+    infl["negative-past-conditional"] = nai_form[:-2] + "なかったら"
     infl["negative-participle"] = nai_form[:-2] + "ないで"
     infl["negative-provisional-conditional"] = nai_form[:-2] + "なければ"
     infl["negative-provisional-conditional-colloquial"] = nai_form[:-2] + "なきゃ"
@@ -257,12 +274,13 @@ def inflect(dict_form, pos):
 
     infl["wish"] = infl["nominal"] + "たい"
     infl["wish-past"] = infl["nominal"] + "たかった"
+    infl["wish-past-conditional"] = infl["nominal"] + "たかったら"
     infl["wish-nominal"] = infl["nominal"] + "たく"
 
     infl["polite"] = infl["nominal"] + "ます"
     infl["past-polite"] = infl["nominal"] + "ました"
+    infl["past-polite-conditional"] = infl["nominal"] + "ましたら"
     infl["negative-polite"] = infl["nominal"] + "ません"
     infl["volitional-polite"] = infl["nominal"] + "ましょう"
-    infl["imperative-polite"] = infl["participle"] + "ください"
 
     return infl
