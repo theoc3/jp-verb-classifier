@@ -3,6 +3,8 @@
 ## Description
  A Bi-directional Long Short-Term Memory (BiLSTM) Classifer for Japanese sentences that categorizes the verbs contained within by their tense/voice e.g. passive, past, participle, etc.
 
+ [Paper](papers/CS505_paper_theo_chen.pdf) - [Poster](papers/CS505_poster_theo_chen.pdf)
+
 ## Installation
 
 Only ```python<=3.12.3``` will work as of now, due to [compatibility issues](https://github.com/explosion/spaCy/issues/13550) with spaCy. 
