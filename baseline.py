@@ -77,7 +77,9 @@ def predict_verb_type(segment):
     return prediction, confidence
 
 ### TEST PREDICTION
-test_segments = ["誰が一番に着く", "か私には分かりません"]
+print("\nExample Predictions:")
+test_df = pd.read_csv('test.csv')
+test_segments = test_df['segment'].tolist()
 for segment in test_segments:
     pred_type, confidence = predict_verb_type(segment)
     print(f"Segment: {segment}")
