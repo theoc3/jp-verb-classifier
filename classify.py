@@ -1,10 +1,11 @@
 import spacy
 nlp = spacy.load("ja_core_news_trf")
 
+from jamdict import Jamdict
+jam = Jamdict()
+
 import csv
-
 import inflections
-
 import pprint
 
 def generate_tagset(filepath):
@@ -39,6 +40,7 @@ def find_verb(sentence):
     potential_noun = None
     
     for i in nlp_sentence:
+        #print(i.pos_,i.text,i.lemma_,i.morph)
         if i.pos_ == 'ADP':
             if i.text == 'を':
                 last_particles.append(('wo', index))
@@ -46,16 +48,19 @@ def find_verb(sentence):
                 last_particles.append(('ga', index))
             elif i.text == 'に':
                 ni = True
-        
-        # Keep track of nouns that might be part of する compound
-        if i.pos_ == 'NOUN':
-            potential_noun = (index, i)
-        
         if i.pos_ == 'VERB': 
             current_verb = i
             add_aux = True
-            if len(i.text) > 0 and '\u3040' <= i.text[-1] <= '\u309F':  # Check if last character is hiragana
+            
+            # Check for suru verb
+            if all('\u4E00' <= char <= '\u9FFF' for char in i.text):
+                if len(i.text) == 2 and i.text != '出来':
+                    continue
+                else: 
+                    full_verb.append((index,i))
+            else:
                 full_verb.append((index,i))
+ 
             # Check if particles preceded this verb
             for particle, p_idx in last_particles:
                 if index - p_idx == 1:  # Check if particle is next to verb
@@ -67,6 +72,8 @@ def find_verb(sentence):
             
         elif i.pos_ == 'AUX' and add_aux:
             full_verb.append((index, i))
+        # elif i.pos_ == 'AUX' # Future desu case
+        
         elif i.pos_ == 'SCONJ' and add_aux:
             full_verb.append((index, i))
             all_verbs.append((full_verb,ni,wo,ga))
@@ -82,9 +89,6 @@ def find_verb(sentence):
             ni = False
             wo = False
             ga = False
-            potential_noun = None if i.pos_ != 'NOUN' else (index, i)
-        else:
-            potential_noun = None if i.pos_ != 'NOUN' else (index, i)
         index += 1
     
     # Append the last full_verb if the sentence ends with a verb or auxiliary verb
@@ -101,15 +105,17 @@ def find_verb(sentence):
 def get_verb_type(verb):
     token = verb[1][0][1]
     morph = token.morph.to_dict()
-    print("morph",morph)
     lemma = verb[1][0][1].lemma_
     if lemma == "行く":
         return "v5k-s"
     if lemma == "ある":
         return "v5r-i"
-    
     if 'Inflection' not in morph:
-        print("error")
+        raise ValueError("Missing Inflection in morphology data")
+    elif "文語" in morph['Inflection']:
+        raise ValueError("Classical Verb")
+    elif "形容詞" in morph['Inflection']:
+        raise ValueError("Desu Verb")
     else:
         rule = morph['Inflection'].split(';')[0]
         return inflection_tagset[mecab_tagset[rule]]
@@ -202,7 +208,7 @@ def classify_verb(verb):
                             return full_verb_form, key
                         else:
                             return full_verb_form, key.replace('potential', 'passive')
-            elif verb[1][0][1].lemma_[-2] in exceptionDict.keys():
+            elif verb[1][0][1].lemma_[-2] in exceptionDict.keys() and jam.lookup(verb[1][0][1].lemma_) == []:
                 if full_verb_form[:2] == "見え" or full_verb_form[:3] == "聞こえ":
                     return full_verb_form, key
                 else:
@@ -220,236 +226,278 @@ def classify_verb(verb):
 # token object: token.text,token.lemma_,token.pos_,token.morph,token.is_stop,token.tag_
 
 # v1 
-ichidan_verb = find_verb("""
-                食べる、
-                食べ、
-                食べた、
-                    食べたら、
+# ichidan_verb = find_verb("""
+#                 食べる、
+#                 食べ、
+#                 食べた、
+#                     食べたら、
                     
-                食べない、
-                    食べなかった、
-                        食べなかったら、
-                    食べなく、
-                    食べないで、
+#                 食べない、
+#                     食べなかった、
+#                         食べなかったら、
+#                     食べなく、
+#                     食べないで、
                     
-                食べられる、
-                    食べられた、
-                        食べられたら、
-                    食べられない、
-                        食べられなかった、
-                            食べられなかったら、
-                        食べられなく、
-                        食べられないで、
-                    食べられれば、##
-                    食べられなければ、##
-                    食べられなきゃ、##
-                    食べられます、
-                    食べられました、
-                        食べられましたら、
-                    食べられません、
-                    食べられましょう、
+#                 食べられる、
+#                     食べられた、
+#                         食べられたら、
+#                     食べられない、
+#                         食べられなかった、
+#                             食べられなかったら、
+#                         食べられなく、
+#                         食べられないで、
+#                     食べられれば、##
+#                     食べられなければ、##
+#                     食べられなきゃ、##
+#                     食べられます、
+#                     食べられました、
+#                         食べられましたら、
+#                     食べられません、
+#                     食べられましょう、
                 
-                食べれる、
-                    食べれた、
-                        食べれたら、
-                    食べれない、
-                        食べれなかった、
-                            食べれなかったら、
-                        食べれなく、
-                        食べれないで、
-                    食べれれば、##
-                    食べれなければ、##
-                    食べれなきゃ、##
-                    食べれます、
-                    食べれました、
-                        食べれましたら、
-                    食べれません、
-                    食べれましょう、
+#                 食べれる、
+#                     食べれた、
+#                         食べれたら、
+#                     食べれない、
+#                         食べれなかった、
+#                             食べれなかったら、
+#                         食べれなく、
+#                         食べれないで、
+#                     食べれれば、##
+#                     食べれなければ、##
+#                     食べれなきゃ、##
+#                     食べれます、
+#                     食べれました、
+#                         食べれましたら、
+#                     食べれません、
+#                     食べれましょう、
                 
-                食べられる、
-                    食べられた、
-                        食べられたら、
-                    食べられない、
-                        食べられなかった、
-                            食べられなかったら、
-                        食べられなく、
-                        食べられないで、
-                    食べられれば、##
-                    食べられなければ、##
-                    食べられなきゃ、##
-                    食べられます、
-                    食べられました、
-                        食べられましたら、
-                    食べられません、
-                    食べられましょう、
+#                 食べられる、
+#                     食べられた、
+#                         食べられたら、
+#                     食べられない、
+#                         食べられなかった、
+#                             食べられなかったら、
+#                         食べられなく、
+#                         食べられないで、
+#                     食べられれば、##
+#                     食べられなければ、##
+#                     食べられなきゃ、##
+#                     食べられます、
+#                     食べられました、
+#                         食べられましたら、
+#                     食べられません、
+#                     食べられましょう、
                         
-                食べさせる、
-                    食べさせた、
-                        食べさせたら、
-                    食べさせない、
-                        食べさせなかった、
-                            食べさせなかったら、
-                        食べさせなく、
-                        食べさせないで、
-                    食べさせば、
-                    食べさせなければ、
-                    食べさせなきゃ、##
-                    食べさせます、
-                    食べさせました、
-                        食べさせましたら、
-                    食べさせません、
-                    食べさせましょう、
+#                 食べさせる、
+#                     食べさせた、
+#                         食べさせたら、
+#                     食べさせない、
+#                         食べさせなかった、
+#                             食べさせなかったら、
+#                         食べさせなく、
+#                         食べさせないで、
+#                     食べさせば、
+#                     食べさせなければ、
+#                     食べさせなきゃ、##
+#                     食べさせます、
+#                     食べさせました、
+#                         食べさせましたら、
+#                     食べさせません、
+#                     食べさせましょう、
                             
-                食べさせられる、
-                    食べさせられた、
-                        食べさせられたら、
-                    食べさせられない、
-                        食べさせなかった、
-                            食べさせなかったら、
-                        食べさせなく、
-                        食べさせないで、
-                    食べさせられれば、##
-                    食べさせられなければ、##
-                    食べさせられなきゃ、##
-                    食べさせられます、
-                    食べさせられました、   
-                        食べさせられましたら、
-                    食べさせられません、
-                    食べさせられましょう、
+#                 食べさせられる、
+#                     食べさせられた、
+#                         食べさせられたら、
+#                     食べさせられない、
+#                         食べさせなかった、
+#                             食べさせなかったら、
+#                         食べさせなく、
+#                         食べさせないで、
+#                     食べさせられれば、##
+#                     食べさせられなければ、##
+#                     食べさせられなきゃ、##
+#                     食べさせられます、
+#                     食べさせられました、   
+#                         食べさせられましたら、
+#                     食べさせられません、
+#                     食べさせられましょう、
                 
-                食べれば、
-                食べれなければ、
-                    食べなきゃ、
+#                 食べれば、
+#                 食べれなければ、
+#                     食べなきゃ、
                 
-                食べろ、
-                食べよう、
-                食べたい、
-                食べたかった、
-                    食べたかったら、
-                食べたく、
-                食べます、
-                食べました、
-                    食べましたら、
-                食べません、
-                食べましょう、
-                """)
+#                 食べろ、
+#                 食べよう、
+#                 食べたい、
+#                 食べたかった、
+#                     食べたかったら、
+#                 食べたく、
+#                 食べます、
+#                 食べました、
+#                     食べましたら、
+#                 食べません、
+#                 食べましょう、
+#                 """)
 
-godan_verb_k = find_verb("""
-                行く、
-                行き、
-                行った、
-                    行ったら、
+# godan_verb_k = find_verb("""
+#                 行く、
+#                 行き、
+#                 行った、
+#                     行ったら、
                     
-                行かない、
-                    行かなかった、
-                        行かなかったら、
-                    行かなく、
-                    行かないで、
+#                 行かない、
+#                     行かなかった、
+#                         行かなかったら、
+#                     行かなく、
+#                     行かないで、
                     
-                行ける、
-                    行けた、
-                        行けたら、
-                    行けない、
-                        行けなかった、
-                            行けなかったら、、
-                        行けなく、
-                        行けないで、
-                    行けば、##
-                    行けなければ、##
-                    行けなきゃ、##
-                    行けます、
-                    行けました、
-                        行けましたら、
-                    行けません、
-                    行けましょう、
+#                 行ける、
+#                     行けた、
+#                         行けたら、
+#                     行けない、
+#                         行けなかった、
+#                             行けなかったら、、
+#                         行けなく、
+#                         行けないで、
+#                     行けば、##
+#                     行けなければ、##
+#                     行けなきゃ、##
+#                     行けます、
+#                     行けました、
+#                         行けましたら、
+#                     行けません、
+#                     行けましょう、
                 
-                行かれる、
-                    行かれた、
-                        行かれたら、
-                    行かれない、
-                        行かれなかった、
-                            行かれなかったら、
-                        行かれなく、
-                        行かれないで、
-                    行かれれば、##
-                    行かれなければ、##
-                    行かれなきゃ、##
-                    行かれます、
-                    行かれました、
-                        行かれましたら、
-                    行かれません、
-                    行かれましょう、
+#                 行かれる、
+#                     行かれた、
+#                         行かれたら、
+#                     行かれない、
+#                         行かれなかった、
+#                             行かれなかったら、
+#                         行かれなく、
+#                         行かれないで、
+#                     行かれれば、##
+#                     行かれなければ、##
+#                     行かれなきゃ、##
+#                     行かれます、
+#                     行かれました、
+#                         行かれましたら、
+#                     行かれません、
+#                     行かれましょう、
                         
-                行かせる、
-                    行かせた、
-                        行かせたら、
-                    行かせない、
-                        行かせなかった、
-                            行かせなかったら、
-                        行かせなく、
-                        行かせないで、
-                    行かせれば、
-                    行かせなければ、
-                    行かせなきゃ、##
-                    行かせます、
-                    行かせました、
-                        行かせましたら、
-                    行かせません、
-                    行かせましょう、
+#                 行かせる、
+#                     行かせた、
+#                         行かせたら、
+#                     行かせない、
+#                         行かせなかった、
+#                             行かせなかったら、
+#                         行かせなく、
+#                         行かせないで、
+#                     行かせれば、
+#                     行かせなければ、
+#                     行かせなきゃ、##
+#                     行かせます、
+#                     行かせました、
+#                         行かせましたら、
+#                     行かせません、
+#                     行かせましょう、
                             
-                行かせられる、
-                    行かせられた、
-                        行かせられたら、
-                    行かせられない、
-                        行かせられなかった、
-                            行かせられなかったら、
-                        行かせられなく、
-                        行かせられないで、
-                    行かせられれば、##
-                    行かせられなければ、##
-                    行かせられなきゃ、##
-                    行かせられます、
-                    行かせられました、   
-                        行かせられましたら、
-                    行かせられません、
-                   行かせられましょう、
+#                 行かせられる、
+#                     行かせられた、
+#                         行かせられたら、
+#                     行かせられない、
+#                         行かせられなかった、
+#                             行かせられなかったら、
+#                         行かせられなく、
+#                         行かせられないで、
+#                     行かせられれば、##
+#                     行かせられなければ、##
+#                     行かせられなきゃ、##
+#                     行かせられます、
+#                     行かせられました、   
+#                         行かせられましたら、
+#                     行かせられません、
+#                    行かせられましょう、
                 
-                行けば、
-                行けなければ、
-                    行けなきゃ、
+#                 行けば、
+#                 行けなければ、
+#                     行けなきゃ、
                 
-                行けろ、
-                行こう、
-                行きたい、
-                行きたかった、
-                    行きたかったら、
-                行きたく、
-                行きます、
-                行きました、
-                    行きましたら、
-                行きません、
-                行きましょう、
-                """)
+#                 行けろ、
+#                 行こう、
+#                 行きたい、
+#                 行きたかった、
+#                     行きたかったら、
+#                 行きたく、
+#                 行きます、
+#                 行きました、
+#                     行きましたら、
+#                 行きません、
+#                 行きましょう、
+#                 """)
 
-verbs = find_verb("""
+# copula = find_verb("""
+#                 です、
+#                     でした、
+#                         でしたら、
+                
+#                 ではない、じゃない、
+#                     ではなかった、じゃなかった、
+#                         ではなかったら、じゃなかったら、
+#                     ではなく、じゃなく、
+#                     ではなくて、じゃなくて、
+                
+#                 であれば、
+#                 でなければ、
+#                     でなきゃ、
+                
+#                 でしょう、
+#                 だろう、
+                
+#                 であった、
+#                     であったら、
+#                 であり、
+#                 であって、
+                
+#                 ではあります、じゃあります、
+#                 ではありません、じゃありません、
+#                     ではありませんでした、じゃありませんでした、
+#                         ではありませんでしたら、じゃありませんでしたら、
+                
+#                 でございます、
+#                     でございました、
+#                         でございましたら、
+#                     でございません、
+#                         でございませんでした、
+#                             でございませんでしたら、
+                
+#                 だった、
+#                     だったら、
+#                 だって、
+                
+#                 ですが、
+#                 ですけど、
+#                 ですから、
+#                 """)
 
-                  """)
+# verbs = find_verb("""
+# 「風と共に去りぬ」を読む。""")
 
+# print(verbs)
+# for i in verbs:
 
-print(godan_verb_k)
-for i in godan_verb_k:
-
-    print(classify_verb(i))
+#     print(classify_verb(i))
     #pprint.pprint(get_conjugations(i))
     
     
-from jamdict import Jamdict
+# from jamdict import Jamdict
 
-jam = Jamdict()
-result = jam.lookup("勉強")
+# jam = Jamdict()
+# result = jam.lookup("行ける")
 
-for entry in result.entries:
-    print(entry)
+# for entry in result.entries:
+#     print(entry)
     
 
 

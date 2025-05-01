@@ -1,0 +1,75 @@
+                                             precision    recall  f1-score   support
+
+                                  causative       0.75      1.00      0.85        44
+                         causative-negative       1.00      0.40      0.57         5
+              causative-negative-participle       0.67      1.00      0.80         2
+                    causative-negative-past       1.00      0.33      0.50         3
+ causative-negative-provisional-conditional       1.00      1.00      1.00         5
+                          causative-nominal       1.00      0.25      0.40         4
+                       causative-participle       0.77      1.00      0.87        95
+                          causative-passive       1.00      1.00      1.00         1
+            causative-passive-negative-past       0.00      0.00      0.00         1
+                     causative-passive-past       1.00      1.00      1.00         6
+              causative-passive-past-polite       0.00      0.00      0.00         1
+                             causative-past       0.79      1.00      0.88       106
+                      causative-past-polite       1.00      1.00      1.00         5
+                           causative-polite       0.60      1.00      0.75         3
+          causative-provisional-conditional       1.00      1.00      1.00         1
+                       causative-volitional       0.88      1.00      0.93        14
+                causative-volitional-polite       0.00      0.00      0.00         2
+                             causative-wish       1.00      0.50      0.67         2
+                     causative-wish-nominal       0.00      0.00      0.00         1
+                                conditional       0.91      0.98      0.95       193
+                                       dict       0.99      0.97      0.98      8821
+                                 imperative       0.73      0.78      0.75        78
+                                   negative       0.98      0.99      0.98      1736
+                           negative-nominal       0.75      1.00      0.86         6
+                        negative-participle       0.91      0.99      0.95       104
+                              negative-past       0.94      0.99      0.97       559
+                  negative-past-conditional       1.00      1.00      1.00        10
+                            negative-polite       0.98      1.00      0.99       476
+           negative-provisional-conditional       0.99      0.99      0.99       352
+negative-provisional-conditional-colloquial       1.00      1.00      1.00         3
+                                    nominal       0.89      0.90      0.90       561
+                                 participle       0.99      0.98      0.99      8865
+                                    passive       0.83      0.98      0.90       177
+                 passive-colloquial-nominal       0.00      0.00      0.00         1
+                        passive-conditional       1.00      0.50      0.67         2
+                           passive-negative       0.94      0.95      0.95        66
+                passive-negative-participle       0.00      0.00      0.00         1
+                      passive-negative-past       0.86      0.94      0.90        34
+                    passive-negative-polite       0.89      1.00      0.94         8
+   passive-negative-provisional-conditional       1.00      1.00      1.00         5
+                            passive-nominal       0.58      0.58      0.58        12
+                         passive-participle       0.91      0.99      0.95       373
+                               passive-past       0.93      0.99      0.96       418
+                        passive-past-polite       0.87      1.00      0.93        26
+                             passive-polite       0.92      0.94      0.93        35
+            passive-provisional-conditional       0.00      0.00      0.00         2
+                         passive-volitional       0.00      0.00      0.00         1
+                               passive-wish       0.00      0.00      0.00         1
+                       passive-wish-nominal       0.50      1.00      0.67         2
+                                       past       0.99      0.98      0.99      7721
+                                past-polite       0.98      0.99      0.99       600
+                    past-polite-conditional       1.00      1.00      1.00         2
+                                     polite       0.98      1.00      0.99      1550
+                                  potential       0.55      0.67      0.60         9
+                         potential-negative       0.00      0.00      0.00         2
+                    potential-negative-past       0.50      0.33      0.40         3
+                  potential-negative-polite       0.00      0.00      0.00         1
+                       potential-participle       1.00      0.78      0.88         9
+                             potential-past       0.60      0.43      0.50         7
+                      potential-past-polite       1.00      1.00      1.00         1
+                           potential-polite       1.00      0.67      0.80         3
+          potential-provisional-conditional       0.00      0.00      0.00         1
+                    provisional-conditional       0.95      0.99      0.97       334
+                                 volitional       0.96      0.97      0.97       388
+                          volitional-polite       0.98      0.99      0.99       126
+                                       wish       0.95      1.00      0.97       229
+                               wish-nominal       0.88      0.93      0.90        40
+                                  wish-past       0.79      1.00      0.88        15
+                      wish-past-conditional       0.00      0.00      0.00         1
+
+                                   accuracy                           0.98     34271
+                                  macro avg       0.72      0.72      0.71     34271
+                               weighted avg       0.98      0.98      0.98     34271

@@ -211,20 +211,30 @@ def inflect(dict_form, pos):
         infl["imperative"] = infl["potential"][:-1]
 
     elif pos == "vs-i":
-        # suru
+        # suru and zuru verbs
 
-        _check(dict_form, pos, "為る", "する")
+        _check(dict_form, pos, "為る", "する", "ずる")
 
-        if dict_form[-2] == "す":
+        if dict_form[-2:] == "する":
             root = dict_form[:-2]
             infl["nominal"] = root + "し"
             infl["potential"] = root + "できる"
             infl["passive"] = root + "される"
             infl["causative"] = root + "させる"
-            infl["causative-passive"] = root + "させられる" # additional
+            infl["causative-passive"] = root + "させられる"
             infl["provisional-conditional"] = root + "すれば"
             infl["imperative"] = root + "しろ"
             infl["volitional"] = root + "しよう"
+        elif dict_form[-2:] == "ずる":
+            root = dict_form[:-2]
+            infl["nominal"] = root + "じ"
+            infl["potential"] = root + "じられる"
+            infl["passive"] = root + "じられる"
+            infl["causative"] = root + "じさせる"
+            infl["causative-passive"] = root + "じさせられる"
+            infl["provisional-conditional"] = root + "ずれば"
+            infl["imperative"] = root + "じろ"
+            infl["volitional"] = root + "じよう"
         else:
             infl["nominal"] = dict_form[:-1]
 
