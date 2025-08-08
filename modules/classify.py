@@ -20,8 +20,8 @@ def generate_tagset(filepath):
     return tagset
 
 # https://www.sketchengine.eu/tagset-jp-mecab/
-mecab_tagset = generate_tagset("./conjugation_tags.csv")
-inflection_tagset = generate_tagset("./conj_tags_to_inflections.csv")
+mecab_tagset = generate_tagset("./conjugation_info/conjugation_tags.csv")
+inflection_tagset = generate_tagset("./conjugation_info/conj_tags_to_inflections.csv")
 
 def find_verb(sentence):
     all_verbs = []

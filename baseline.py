@@ -78,7 +78,7 @@ def predict_verb_type(segment):
 
 ### TEST PREDICTION
 print("\nExample Predictions:")
-test_df = pd.read_csv('test.csv')
+test_df = pd.read_csv('results/test.csv')
 test_segments = test_df['segment'].tolist()
 for segment in test_segments:
     pred_type, confidence = predict_verb_type(segment)

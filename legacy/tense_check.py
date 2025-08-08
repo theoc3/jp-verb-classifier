@@ -10,7 +10,7 @@ import requests
 import json
 
 # conjugation script
-import inflections
+import modules.inflections as inflections
 
 # kana kanji conversion
 import mozcpy
