@@ -132,6 +132,10 @@ Predicted verb type: dict (confidence: 1.00)
 
 ```text
 jp-verb-classifier/
+├── conjugation_info/                       *files referenced for conjugation information *
+│   ├── conj_tags_to_inflections.csv          *conjugation rule tagset for spacy tags --> mecab tags*
+│   ├── conjugation_tags.csv                  *conjugation rule tagset for mecab tags --> tags recognized by inflections.py*                    
+│   └── inflection_types.csv                  *list of root conjugation rules*
 ├── data/                                   *data files*
 │   ├── data_1/                              *data files for the SNOW T15 Corpus (not used in final model)*
 │   ├── ├── sentences_cleaned.csv             *Step 3. cleaned sentences for T15*
@@ -155,22 +159,22 @@ jp-verb-classifier/
 │   ├── baseline_model.pkl                    *saved baseline model (not included in repo due to size)* 
 │   ├── bilstm_model_evaluation.txt           *evaluation of bilstm*
 │   └── bilstm_model.pt                       *saved bilstm model*
-├── plots/                                   *figures
+├── modules/                                 *modules for data processing*
+│   ├── classify.py                           *module for classifying verbs* 
+│   ├── inflections.py                        *conjugation/inflection script that takes a root verb and its conjugation rule, returning a full dictionary of conjugations*
+│   └── sentence_tokenize.py                  *depreceated, but saves a .pkl of sentence_cleaned.csv with an additional column containing spacy token data*
+├── plots/                                   *figures*
 │   ├── baseline_metrics.png                  *bar chart of precision, recall, and F1 for baseline*
 │   ├── bilstm_metrics.png                    *bar chart of precision, recall, and F1 for bilstm*
 │   └── label-process-graph.png               *visual flow-chart of how verbs are classified by classify.py*
+├── results/                                 *results*
+│   ├── bilstm_epochs.csv                     *epoch training metrics from training bilstm*
+│   ├── report.py                             *generates tables and figures for metrics foudn in /plot*
+│   └── test.csv                              *test examples*
 ├── baseline.py                              *trains or loads new baseline model* 
-├── bilstm_epochs.csv                        *epoch training metrics from training bilstm*
-├── classify.py                              *module for classifying verbs* 
-├── conj_tags_to_inflections.csv             *conjugation rule tagset for spacy tags --> mecab tags*
-├── conjugation_tags.csv                     *conjugation rule tagset for mecab tags --> tags recognized by inflections.py*
 ├── data_setup.py                            *Completes step 3 and 4 of data processing*
-├── inflection_types.csv                     *list of root conjugation rules*
-├── inflections.py                           *conjugation/inflection script that takes a root verb and its conjugation rule, returning a full dictionary of conjugations*
 ├── label.py                                 *Completes step 1 and 2 of data processing*
-├── lstm.py                                  *trains or loads new lstm model*
-├── report.py                                *generates tables and figures for metrics foudn in /plot*
-└── sentence_tokenize.py                     *depreceated, but saves a .pkl of sentence_cleaned.csv with an additional column containing spacy token data*
+└── lstm.py                                  *trains or loads new lstm model* 
 ```
 
 
