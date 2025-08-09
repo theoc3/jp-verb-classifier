@@ -1,6 +1,6 @@
 import pandas as pd
 import os.path
-from classify import classify_verb, find_verb
+from modules.classify import classify_verb, find_verb
 from tqdm import tqdm
 
 def extract_excel(raw_path,excel_path):

@@ -5,7 +5,7 @@ from jamdict import Jamdict
 jam = Jamdict()
 
 import csv
-import inflections
+import modules.inflections as inflections
 import pprint
 
 def generate_tagset(filepath):
